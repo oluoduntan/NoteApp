@@ -1,7 +1,8 @@
-from django import forms
+from rest_framework.serializers import ModelSerializer
 from .models import Note
 
-class NoteForm(forms.ModelForm):
+
+class NoteSerializer(ModelSerializer):
     class Meta:
         model = Note
         fields = ("title", "content")
