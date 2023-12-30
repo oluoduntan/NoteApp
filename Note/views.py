@@ -1,11 +1,23 @@
 from django.shortcuts import render
 from Note.models import Note
-from Note.serializers import NoteSerializer
+from Note.serializers import NoteSerializer, UserSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics, permissions
 from rest_framework.response import Response
+from Note.permissions import IsOwnerOrReadOnly
+from django.contrib.auth.models import User
+
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 # Create your views here.
 def home(request):
@@ -15,25 +27,31 @@ class NoteList(APIView):
     """
     List all notes, or create a new note.
     """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get(self, request, format=None):
-        notes = Note.objects.all()
+        notes = self.request.user.note.all()
         serializer = NoteSerializer(notes, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
         serializer = NoteSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # def perform_create(self, serializer):
+    #     serializer.save(owner=self.request.user)
     
 class NoteDetail(APIView):
     """
     Retrieve, update or delete a note instance.
     """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     def get_object(self, pk):
         try:
-            return Note.objects.get(pk=pk)
+            #return Note.objects.get(pk=pk, owner=self.request.user)
+            return self.request.user.note.all().get(pk=pk)
         except Note.DoesNotExist:
             raise Http404
 
