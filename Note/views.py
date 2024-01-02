@@ -27,7 +27,7 @@ class NoteList(APIView):
     """
     List all notes, or create a new note.
     """
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
         notes = self.request.user.note.all()
         serializer = NoteSerializer(notes, many=True)
@@ -47,12 +47,12 @@ class NoteDetail(APIView):
     """
     Retrieve, update or delete a note instance.
     """
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     def get_object(self, pk):
         try:
             #return Note.objects.get(pk=pk, owner=self.request.user)
             return self.request.user.note.all().get(pk=pk)
-        except Note.DoesNotExist:
+        except:
             raise Http404
 
     def get(self, request, pk, format=None):
