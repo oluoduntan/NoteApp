@@ -9,6 +9,16 @@ from rest_framework.response import Response
 from Note.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
 
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('users', request=request, format=format),
+        'notes': reverse('notes', request=request, format=format)
+    })
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()

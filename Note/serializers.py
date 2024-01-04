@@ -4,14 +4,15 @@ from .models import Note
 
 
 
-class UserSerializer(serializers.ModelSerializer):
-    note = serializers.PrimaryKeyRelatedField(many=True, queryset=Note.objects.all())
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    # note = serializers.PrimaryKeyRelatedField(many=True, queryset=Note.objects.all())
+    note = serializers.HyperlinkedRelatedField(many=True, view_name='note', read_only=True)
     class Meta:
         model = User
         fields = ('id', 'username', 'note')
 
 
-class NoteSerializer(serializers.ModelSerializer):
+class NoteSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Note
