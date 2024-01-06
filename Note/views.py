@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from Note.models import Note
 from Note.serializers import NoteSerializer, UserSerializer
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
@@ -16,18 +16,16 @@ from rest_framework.reverse import reverse
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'users': reverse('users', request=request, format=format),
+        'user': reverse('user', request=request, format=format),
         'notes': reverse('notes', request=request, format=format)
     })
 
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
+class UserDetails(generics.ListAPIView):
+    #queryset = User.objects.all()
     serializer_class = UserSerializer
 
-
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    def get_queryset(self):
+        return User.objects.filter(username=self.request.user)
 
 # Create your views here.
 def home(request):
