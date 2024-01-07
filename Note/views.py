@@ -4,7 +4,7 @@ from Note.serializers import NoteSerializer, UserSerializer
 from django.http import Http404, JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, viewsets
 from rest_framework.response import Response
 from Note.permissions import IsOwnerOrReadOnly
 from django.contrib.auth.models import User
@@ -20,16 +20,19 @@ def api_root(request, format=None):
         'notes': reverse('notes', request=request, format=format)
     })
 
-class UserDetails(generics.ListAPIView):
-    #queryset = User.objects.all()
+class UserDetail(generics.ListAPIView):
+    permission_classes = [IsOwnerOrReadOnly]
     serializer_class = UserSerializer
 
     def get_queryset(self):
         return User.objects.filter(username=self.request.user)
+    
+class RegisterUser(generics.CreateAPIView):
+    #permission_classes = []
+    serializer_class = UserSerializer
 
-# Create your views here.
-def home(request):
-    return render(request, "Note/index.html")
+    def get_queryset(self):
+        return User.objects.filter(username=self.request.user)
 
 class NoteList(APIView):
     """
