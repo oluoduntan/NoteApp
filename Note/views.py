@@ -24,7 +24,7 @@ def api_root(request, format=None):
 def login_view(request):
     username = request.data['username']
     password = request.data['password']
-    user = authenticate(request, username=username, password=password)
+    user = authenticate(request, username=username.lower(), password=password)
     if user is not None:
         login(request, user)
         return Response({"message":"Login successful"},status=status.HTTP_200_OK)
@@ -35,6 +35,13 @@ def login_view(request):
 @authentication_classes([authentication.SessionAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def logout_view(request):
+    logout(request)
+    return Response({"message":"Logout Successful"},status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@authentication_classes([authentication.SessionAuthentication])
+@permission_classes([permissions.IsAuthenticated])
+def change_password(request):
     logout(request)
     return Response({"message":"Logout Successful"},status=status.HTTP_200_OK)
     
