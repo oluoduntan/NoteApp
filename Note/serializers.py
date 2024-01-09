@@ -15,14 +15,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         }
     
     def create(self, validated_data):
-        user = User.objects.create(
+        user = User.objects.create_user(
             username=validated_data['username'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            email=validated_data['email']
+            email=validated_data['email'],
+            password=validated_data['password']
         )
-        user.set_password(validated_data['password'])
-        user.save()
+        #user.set_password(validated_data['password'])
+        #user.save()
         return validated_data
 
 
