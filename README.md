@@ -10,7 +10,7 @@ This Django NoteApp is a simple backend application build with `Django Rest Fram
 - **API Endpoints:** Well-defined API endpoints for interacting with the application.
 
 ## Project Structure
-`NoteApp/
+```NoteApp/
 │
 ├── NoteApp/
 │   ├── __pycache__/
@@ -38,7 +38,7 @@ This Django NoteApp is a simple backend application build with `Django Rest Fram
 ├── manage.py
 ├── requirements.txt
 ├── Dockerfile
-└── README.md`
+└── README.md```
 
 ## Getting Started
 1. Clone the repository:
