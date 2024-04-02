@@ -50,4 +50,4 @@ jobs:
         context: .
         platforms: linux/amd64
         push: true
-        tags: Noteapp:latest
+        tags: noteapp-backend:latest
